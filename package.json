@@ -1,0 +1,23 @@
+{
+  "name": "@adra-network/mautic-role-seeder-cli",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "exports": "./index.js",
+  "bin": {
+    "mautic-role-seeder-cli": "./index.mjs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.3.6",
+    "chalk": "^5.2.0",
+    "dotenv": "^16.0.3",
+    "glob": "^10.2.2",
+    "inquirer": "^9.2.0"
+  }
+}
