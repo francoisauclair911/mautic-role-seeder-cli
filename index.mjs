@@ -48,8 +48,12 @@ const questions = [
 
 try {
   console.log(
-    chalk.blue.bgGreen.bold(
-      "This is a basic tool to seed default roles into a new Mautic instance."
+    chalk.green.bold(
+      `
+*********************************************************************    
+Welcome, 
+This is a basic tool to seed default roles into a new Mautic instance.
+*********************************************************************   `
     )
   );
   const { baseUrl, clientId, clientSecret } = await inquirer.prompt(questions);
@@ -63,7 +67,9 @@ try {
     {
       type: "confirm",
       name: "confirmed",
-      message: `Confirm you want to create default roles using the entered credentials`,
+      message: `Confirm you want to create ${
+        Object.keys(Roles).length
+      } roles using the entered credentials`,
       default: false,
     },
   ]);
@@ -80,7 +86,7 @@ try {
   let shouldDeleteAllRoles = false;
   if (roles.length > 1) {
     console.log(
-      chalk.bgYellow.white(
+      chalk.red(
         `
 ********** WARNING ******************************************************************
 *   Excluding the Default Administrator Role,There are already roles in the system. *
@@ -106,7 +112,7 @@ try {
       ...role,
     });
   }
-  console.log(chalk.blue.bgGreen.bold("Completed. All roles seeded"));
+  console.log(chalk.green.bold("Completed. All roles seeded"));
 } catch (error) {
   console.log(chalk.red(error));
 }
