@@ -33,7 +33,7 @@ const questions = [
     },
   },
   {
-    type: "input",
+    type: "password",
     name: "clientSecret",
     message: "Enter client secret",
     default: process.env.CLIENT_SECRET || "",
@@ -53,15 +53,17 @@ try {
     )
   );
   const { baseUrl, clientId, clientSecret } = await inquirer.prompt(questions);
+
+  console.table({
+    "Client ID": clientId,
+    "Client Secret": `*******${clientSecret.slice(-5)}`,
+    "Mautic URL:": baseUrl,
+  });
   const { confirmed } = await inquirer.prompt([
     {
       type: "confirm",
       name: "confirmed",
-      message: `Confirm you want to create default roles using the following? \n
-Client ID: ${clientId}\n
-Client Secret: (hidden)
-Mautic URL: ${baseUrl}\n
-`,
+      message: `Confirm you want to create default roles using the entered credentials`,
       default: false,
     },
   ]);
@@ -72,14 +74,33 @@ Mautic URL: ${baseUrl}\n
   let mautic = new Mautic({ baseUrl, clientId, clientSecret });
 
   await mautic.authorize();
-  await mautic.deleteAllRoles();
 
   const roles = await mautic.listRoles();
+
+  let shouldDeleteAllRoles = false;
   if (roles.length > 1) {
-    throw new Error(
-      "Excluding the Default Administrator Role,There are already roles in the system."
+    console.log(
+      chalk.bgYellow.white(
+        `
+********** WARNING ******************************************************************
+*   Excluding the Default Administrator Role,There are already roles in the system. *
+*************************************************************************************`
+      )
     );
+    const { confirmedRoleDeletion } = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "confirmedRoleDeletion",
+        message: `Do you want to delete them? (default role will not be deleted)`,
+        default: false,
+      },
+    ]);
+    shouldDeleteAllRoles = confirmedRoleDeletion;
   }
+  if (shouldDeleteAllRoles) {
+    await mautic.deleteAllRoles();
+  }
+
   for (const role of Object.values(Roles)) {
     await mautic.createRole({
       ...role,

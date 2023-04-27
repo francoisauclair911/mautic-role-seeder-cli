@@ -2,7 +2,7 @@ export default {
   name: "Mautic Administrator",
   isAdmin: false,
   rawPermissions: {
-    "api:access": ["full"],
+    // "api:access": ["full"],
     "api:clients": ["view", "create"],
     "asset:categories": ["full"],
     "asset:assets": ["full"],
